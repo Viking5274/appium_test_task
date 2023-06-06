@@ -1,5 +1,4 @@
 import time
-import unittest
 from appium.webdriver.common.appiumby import AppiumBy
 import datetime
 from appium import webdriver
@@ -61,14 +60,13 @@ class MyTest:
         el.click()
 
     def full_calendar_up(self):
-        # for _ in range(5):
-        #     self.make_swipe(up=True)
-        self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR,
-                                 f'new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollToBeginning(8);')
+        self.driver.find_element(
+            AppiumBy.ANDROID_UIAUTOMATOR,
+            f"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollToBeginning(8);",
+        )
         time.sleep(1)
 
     def select_date(self, desired_date):
-
         date_object = datetime.datetime.strptime(desired_date, "%m-%d-%Y")
         day = date_object.day
         year = date_object.year
@@ -76,10 +74,9 @@ class MyTest:
         month_year = str(month) + " " + str(year)
 
         calendar_button = self.driver.find_element(
-            by=AppiumBy.ID,
-            value="com.tripadvisor.tripadvisor:id/txtDate"
+            by=AppiumBy.ID, value="com.tripadvisor.tripadvisor:id/txtDate"
         )
-        # calendar_button = self.select_one(short_month, True)
+
         calendar_button.click()
         time.sleep(3)
 
@@ -105,7 +102,6 @@ class MyTest:
 
         date_button = self.select_one(day)
         self.make_click(date_button)
-        # date_button.
 
         apply_button = self.select_one("Apply")
         self.make_click(apply_button)
@@ -151,7 +147,7 @@ class MyTest:
                 hotel = self.select_many(hotel_name, True)
                 self.make_click(hotel[1])
                 break
-            except :
+            except:
                 self.make_swipe()
                 time.sleep(1)
 
@@ -164,43 +160,51 @@ class MyTest:
             self.driver.quit()
 
     def get_prices(self, hotel_data) -> dict:
-
         self.setUp()
         dict_data = {}
 
         for hotel_name, dates_list in hotel_data.items():
-            dict_data[hotel_name] = {}
-            search_button = self.select_one("Search")
-            self.make_click(search_button)
+            try:
+                dict_data[hotel_name] = {}
+                search_button = self.select_one("Search")
+                self.make_click(search_button)
 
-            time.sleep(3)
+                time.sleep(3)
 
-            where_to = self.select_one("Where to?")
-            self.make_click(where_to)
-            time.sleep(3)
+                where_to = self.select_one("Where to?")
+                self.make_click(where_to)
+                time.sleep(3)
 
-            where_to = self.select_one("Where to?")
-            where_to.send_keys(hotel_name)
-            self.driver.keyevent(66)
-            time.sleep(5)
+                where_to = self.select_one("Where to?")
+                where_to.send_keys(hotel_name)
+                self.driver.keyevent(66)
+                time.sleep(5)
 
-            self.select_hotel(hotel_name)
-            time.sleep(3)
+                self.select_hotel(hotel_name)
+                time.sleep(3)
 
-            for date_in_hotel in dates_list:
-                try:
-                    self.select_date(date_in_hotel)
+                for date_in_hotel in dates_list:
+                    try:
+                        self.select_date(date_in_hotel)
 
-                    view_all_button = self.select_one("View all", True)
-                    self.make_click(view_all_button)
-                    time.sleep(10)
+                        view_all_button = self.select_one("View all", True)
+                        self.make_click(view_all_button)
+                        time.sleep(10)
 
-                    dict_data[hotel_name][date_in_hotel] = self.get_provider_price_data()
-                    self.driver.back()
-                except:
-                    continue
+                        dict_data[hotel_name][
+                            date_in_hotel
+                        ] = self.get_provider_price_data()
+                        self.driver.back()
+                    except NoSuchElementException | NoSuchElementException as e:
+                        print(
+                            f"Exception occured while processing data at hotel :{hotel_name}, date: {date_in_hotel} exception: {e}"
+                        )
+                        continue
+            except Exception as e:
+                print(
+                    f"Exception occured while processing data at hotel :{hotel_name}, exception: {e}"
+                )
 
         self.tearDown()
 
         return dict_data
-
