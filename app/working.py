@@ -68,7 +68,7 @@ class MyTest:
         time.sleep(1)
 
     def select_date(self, desired_date):
-        
+
         date_object = datetime.datetime.strptime(desired_date, "%m-%d-%Y")
         day = date_object.day
         year = date_object.year
@@ -204,6 +204,3 @@ class MyTest:
 
         return dict_data
 
-
-if __name__ == "__main__":
-    unittest.main()
