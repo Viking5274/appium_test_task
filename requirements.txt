@@ -1,0 +1,12 @@
+Appium-Python-Client==2.10.1
+async-generator==1.10
+core-universal==3.1.0
+fastapi==0.96.0
+hiredis==2.2.3
+mypy-extensions==1.0.0
+redis==4.5.5
+rq==1.15.0
+selenium==4.9.1
+six==1.16.0
+urllib3==2.0.2
+uvicorn==0.22.0
